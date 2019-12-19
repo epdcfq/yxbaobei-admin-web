@@ -1,8 +1,16 @@
 import request from '@/utils/request'
 
+// 获取单页面权限
+export function getPermission(pageid) {
+  return request({
+    url: 'roles/page/${pageid}',
+    method: 'post'
+  })
+}
+
 export function getRoutes() {
   return request({
-    url: '/routes',
+    url: '/routes/role',
     method: 'get'
   })
 }

@@ -36,6 +36,11 @@ Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
 })
 
+// 全局注册mint-ui组件
+// import Mint from 'mint-ui'
+// import 'mint-ui/lib/style.css'
+// Vue.use(Mint)
+
 // register global utility filters
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])

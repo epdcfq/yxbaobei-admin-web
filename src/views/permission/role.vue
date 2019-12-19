@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
-    <el-button type="primary" @click="handleAddRole">New Role</el-button>
+    <el-button type="primary" @click="handleAddRole">新增</el-button>
 
     <el-table :data="rolesList" style="width: 100%;margin-top:30px;" border>
       <el-table-column align="center" label="Role Key" width="220">
         <template slot-scope="scope">
-          {{ scope.row.key }}
+          {{ scope.row.id }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="Role Name" width="220">
@@ -15,7 +15,7 @@
       </el-table-column>
       <el-table-column align="header-center" label="Description">
         <template slot-scope="scope">
-          {{ scope.row.description }}
+          {{ scope.row.remarks }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="Operations">
@@ -26,17 +26,18 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'Edit Role':'New Role'">
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑':'新增'">
       <el-form :model="role" label-width="80px" label-position="left">
         <el-form-item label="Name">
-          <el-input v-model="role.name" placeholder="Role Name" />
+          <el-input v-model="role.name" placeholder="角色名称" maxlength="30" />
         </el-form-item>
         <el-form-item label="Desc">
           <el-input
-            v-model="role.description"
+            v-model="role.remark"
             :autosize="{ minRows: 2, maxRows: 4}"
             type="textarea"
-            placeholder="Role Description"
+            placeholder="角色描述"
+            maxlength="100"
           />
         </el-form-item>
         <el-form-item label="Menus">
@@ -52,8 +53,8 @@
         </el-form-item>
       </el-form>
       <div style="text-align:right;">
-        <el-button type="danger" @click="dialogVisible=false">Cancel</el-button>
-        <el-button type="primary" @click="confirmRole">Confirm</el-button>
+        <el-button type="danger" @click="dialogVisible=false">取 消</el-button>
+        <el-button type="primary" @click="confirmRole">保 存</el-button>
       </div>
     </el-dialog>
   </div>
@@ -68,7 +69,8 @@ const defaultRole = {
   key: '',
   name: '',
   description: '',
-  routes: []
+  routes: [],
+  lock: '0'
 }
 
 export default {
@@ -93,7 +95,7 @@ export default {
   },
   created() {
     // Mock: get all routes and roles list from server
-    this.getRoutes()
+    // this.getRoutes()
     this.getRoles()
   },
   methods: {
@@ -208,28 +210,28 @@ export default {
       this.role.routes = this.generateTree(deepClone(this.serviceRoutes), '/', checkedKeys)
 
       if (isEdit) {
-        await updateRole(this.role.key, this.role)
+        await updateRole(this.role.id, this.role)
         for (let index = 0; index < this.rolesList.length; index++) {
-          if (this.rolesList[index].key === this.role.key) {
+          if (this.rolesList[index].id === this.role.id) {
             this.rolesList.splice(index, 1, Object.assign({}, this.role))
             break
           }
         }
       } else {
         const { data } = await addRole(this.role)
-        this.role.key = data.key
+        this.role.id = data.id
         this.rolesList.push(this.role)
       }
 
-      const { description, key, name } = this.role
+      const { remark, id, name } = this.role
       this.dialogVisible = false
       this.$notify({
         title: 'Success',
         dangerouslyUseHTMLString: true,
         message: `
-            <div>Role Key: ${key}</div>
+            <div>Role Key: ${id}</div>
             <div>Role Name: ${name}</div>
-            <div>Description: ${description}</div>
+            <div>Description: ${remark}</div>
           `,
         type: 'success'
       })
@@ -254,6 +256,9 @@ export default {
 
       return false
     }
+    // handleRolesChange() {
+    //   this.$router.push({ path: '/permission/index?' + +new Date() })
+    // }
   }
 }
 </script>
@@ -266,5 +271,12 @@ export default {
   .permission-tree {
     margin-bottom: 30px;
   }
+}
+.el-table .warning-row {
+  background: oldlace;
+}
+
+.el-table .success-row {
+  background: #f0f9eb;
 }
 </style>

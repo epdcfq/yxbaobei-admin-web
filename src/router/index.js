@@ -11,6 +11,7 @@ import componentsRouter from './modules/components'
 import chartsRouter from './modules/charts'
 import tableRouter from './modules/table'
 import nestedRouter from './modules/nested'
+import wechatRouter from './modules/wechat'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -79,7 +80,7 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+        meta: { title: '工作台', icon: 'dashboard', affix: true }
       }
     ]
   },
@@ -91,7 +92,7 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/documentation/index'),
         name: 'Documentation',
-        meta: { title: 'Documentation', icon: 'documentation', affix: true }
+        meta: { title: 'Documentation', icon: 'documentation', affix: false }
       }
     ]
   },
@@ -130,27 +131,32 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
+    id: 1,
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',
     alwaysShow: true, // will always show the root menu
     name: 'Permission',
     meta: {
-      title: 'Permission',
+      title: '权限管理',
       icon: 'lock',
+      noCache: true,
       roles: ['admin', 'editor'] // you can set roles in root nav
     },
     children: [
       {
+        id: 2,
         path: 'page',
         component: () => import('@/views/permission/page'),
         name: 'PagePermission',
         meta: {
-          title: 'Page Permission',
+          title: '页面管理',
+          noCache: true,
           roles: ['admin'] // or you can only set roles in sub nav
         }
       },
       {
+        id: 3,
         path: 'directive',
         component: () => import('@/views/permission/directive'),
         name: 'DirectivePermission',
@@ -160,22 +166,115 @@ export const asyncRoutes = [
         }
       },
       {
+        id: 4,
         path: 'role',
         component: () => import('@/views/permission/role'),
         name: 'RolePermission',
         meta: {
-          title: 'Role Permission',
+          title: '角色管理',
+          noCache: true,
           roles: ['admin']
         }
       }
     ]
   },
+  {
+    id: 100,
+    path: '/article',
+    component: Layout,
+    redirect: '/article/list',
+    alwaysShow: true, // will always show the root menu
+    name: 'article',
+    meta: {
+      title: '资讯管理',
+      icon: 'example'
+    },
+    children: [
+      {
+        id: 101,
+        title: '资讯列表',
+        path: '/article/list',
+        component: () => import('@/views/admin/article/index'),
+        name: 'article_list',
+        meta: { title: '资讯管理', icon: 'list', activeMenu: '/article/list' }
+      },
+      {
+        id: 102,
+        path: 'create',
+        component: () => import('@/views/admin/article/create'),
+        name: 'article_create',
+        meta: { title: '新增资讯', icon: 'edit', activeMenu: '/article/list' }
+        // hidden: true
+      },
+      {
+        id: 103,
+        path: 'edit/:id(\\d+)',
+        component: () => import('@/views/admin/article/edit'),
+        name: 'article_category',
+        meta: { title: '编辑', noCache: true, activeMenu: '/article/list' },
+        hidden: true
+      }
+    ]
+  },
+  {
+    id: 1,
+    path: '/special',
+    component: Layout,
+    redirect: '/special/create',
+    alwaysShow: true, // will always show the root menu
+    name: 'special',
+    meta: {
+      title: '专题管理',
+      icon: 'table'
+    },
+    children: [
+      {
+        id: 1,
+        title: '新增专题',
+        path: '/special/create',
+        component: () => import('@/views/admin/special/create'),
+        name: 'article_list',
+        meta: { title: '新增专题', icon: 'list', activeMenu: '/special/create' }
+      }
+    ]
+  },
+  {
+    id: 1,
+    path: '/wechat',
+    component: Layout,
+    redirect: '/wechat/official',
+    alwaysShow: true, // will always show the root menu
+    name: 'official',
+    meta: {
+      title: '系统设置',
+      icon: 'config'
+    },
+    children: [
+      {
+        id: 1,
+        title: '公众号配置',
+        path: '/wechat/official/config',
+        component: () => import('@/views/wechat/official/config'),
+        name: 'official_config',
+        meta: { title: '公众号配置', icon: 'wechat', activeMenu: '/wechat/official/config' }
+      },
+      {
+        id: 1,
+        title: '权限设置',
+        path: '/admin/permission',
+        component: () => import('@/views/admin/permission/index'),
+        meta: { title: '权限设置', icon: 'peoples', activeMenu: '/admin/permission' }
+      }
+    ]
+  },
 
   {
+    id: 99,
     path: '/icon',
     component: Layout,
     children: [
       {
+        id: 99,
         path: 'index',
         component: () => import('@/views/icons/index'),
         name: 'Icons',
@@ -189,8 +288,9 @@ export const asyncRoutes = [
   chartsRouter,
   nestedRouter,
   tableRouter,
-
+  wechatRouter,
   {
+    id: 6,
     path: '/example',
     component: Layout,
     redirect: '/example/list',
@@ -201,19 +301,22 @@ export const asyncRoutes = [
     },
     children: [
       {
+        id: 7,
         path: 'create',
         component: () => import('@/views/example/create'),
         name: 'CreateArticle',
         meta: { title: 'Create Article', icon: 'edit' }
       },
       {
+        id: 8,
         path: 'edit/:id(\\d+)',
         component: () => import('@/views/example/edit'),
         name: 'EditArticle',
-        meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list' },
+        meta: { title: '编辑', noCache: true, activeMenu: '/example/list' },
         hidden: true
       },
       {
+        id: 9,
         path: 'list',
         component: () => import('@/views/example/list'),
         name: 'ArticleList',
@@ -223,10 +326,12 @@ export const asyncRoutes = [
   },
 
   {
+    id: 10,
     path: '/tab',
     component: Layout,
     children: [
       {
+        id: 11,
         path: 'index',
         component: () => import('@/views/tab/index'),
         name: 'Tab',
@@ -236,6 +341,7 @@ export const asyncRoutes = [
   },
 
   {
+    id: 12,
     path: '/error',
     component: Layout,
     redirect: 'noRedirect',
@@ -246,12 +352,14 @@ export const asyncRoutes = [
     },
     children: [
       {
+        id: 13,
         path: '401',
         component: () => import('@/views/error-page/401'),
         name: 'Page401',
         meta: { title: '401', noCache: true }
       },
       {
+        id: 14,
         path: '404',
         component: () => import('@/views/error-page/404'),
         name: 'Page404',
@@ -261,10 +369,12 @@ export const asyncRoutes = [
   },
 
   {
+    id: 15,
     path: '/error-log',
     component: Layout,
     children: [
       {
+        id: 16,
         path: 'log',
         component: () => import('@/views/error-log/index'),
         name: 'ErrorLog',
@@ -311,6 +421,7 @@ export const asyncRoutes = [
   },
 
   {
+    id: 1,
     path: '/zip',
     component: Layout,
     redirect: '/zip/download',
@@ -319,6 +430,7 @@ export const asyncRoutes = [
     meta: { title: 'Zip', icon: 'zip' },
     children: [
       {
+        id: 1,
         path: 'download',
         component: () => import('@/views/zip/index'),
         name: 'ExportZip',
@@ -328,11 +440,13 @@ export const asyncRoutes = [
   },
 
   {
+    id: 1,
     path: '/pdf',
     component: Layout,
     redirect: '/pdf/index',
     children: [
       {
+        id: 1,
         path: 'index',
         component: () => import('@/views/pdf/index'),
         name: 'PDF',
@@ -341,16 +455,19 @@ export const asyncRoutes = [
     ]
   },
   {
+    id: 1,
     path: '/pdf/download',
     component: () => import('@/views/pdf/download'),
     hidden: true
   },
 
   {
+    id: 1,
     path: '/theme',
     component: Layout,
     children: [
       {
+        id: 1,
         path: 'index',
         component: () => import('@/views/theme/index'),
         name: 'Theme',
@@ -360,10 +477,12 @@ export const asyncRoutes = [
   },
 
   {
+    id: 17,
     path: '/clipboard',
     component: Layout,
     children: [
       {
+        id: 1,
         path: 'index',
         component: () => import('@/views/clipboard/index'),
         name: 'ClipboardDemo',
@@ -373,10 +492,12 @@ export const asyncRoutes = [
   },
 
   {
+    id: 18,
     path: 'external-link',
     component: Layout,
     children: [
       {
+        id: 1,
         path: 'https://github.com/PanJiaChen/vue-element-admin',
         meta: { title: 'External Link', icon: 'link' }
       }

@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div style="margin-bottom:15px;">
-      Your roles: {{ roles }}
-    </div>
-    Switch roles:
-    <el-radio-group v-model="switchRoles">
+    <!--<div style="margin-bottom:15px;">-->
+    <!--Your roles: {{ roles }}-->
+    <!--</div>-->
+    <!--Switch roles:-->
+    <el-radio-group v-model="admin">
       <el-radio-button label="editor" />
       <el-radio-button label="admin" />
     </el-radio-group>
@@ -15,6 +15,7 @@
 export default {
   computed: {
     roles() {
+      console.log(this.$store.getters.roles)
       return this.$store.getters.roles
     },
     switchRoles: {
@@ -22,9 +23,10 @@ export default {
         return this.roles[0]
       },
       set(val) {
-        this.$store.dispatch('user/changeRoles', val).then(() => {
-          this.$emit('change')
-        })
+        return val
+        // this.$store.dispatch('user/changeRoles', val).then(() => {
+        //   this.$emit('change')
+        // })
       }
     }
   }

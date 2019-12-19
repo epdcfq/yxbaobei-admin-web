@@ -13,6 +13,7 @@ const mutations = {
     )
   },
   ADD_CACHED_VIEW: (state, view) => {
+    console.log(state.cachedViews, 'cachedviews')
     if (state.cachedViews.includes(view.name)) return
     if (!view.meta.noCache) {
       state.cachedViews.push(view.name)
@@ -57,6 +58,7 @@ const mutations = {
   },
 
   UPDATE_VISITED_VIEW: (state, view) => {
+    console.log(view, 'UPDATE_VISITED_VIEW')
     for (let v of state.visitedViews) {
       if (v.path === view.path) {
         v = Object.assign(v, view)
@@ -68,6 +70,7 @@ const mutations = {
 
 const actions = {
   addView({ dispatch }, view) {
+    console.log(view, 'addView action')
     dispatch('addVisitedView', view)
     dispatch('addCachedView', view)
   },

@@ -7,7 +7,7 @@
       :on-success="handleImageSuccess"
       class="image-uploader"
       drag
-      action="https://httpbin.org/post"
+      action="http://127.0.0.1:8000/api/upload/image/article"
     >
       <i class="el-icon-upload" />
       <div class="el-upload__text">
@@ -63,7 +63,8 @@ export default {
       this.$emit('input', val)
     },
     handleImageSuccess(file) {
-      this.emitInput(file.files.file)
+      console.log(file)
+      this.emitInput(file.data.fullUrl)
     },
     beforeUpload() {
       const _self = this

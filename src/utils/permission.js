@@ -23,3 +23,24 @@ export default function checkPermission(value) {
     return false
   }
 }
+
+/**
+ * 获取权限树id/lebel列表
+ * @param roles
+ * @returns {Array}
+ */
+export function getRoutesTree(roles) {
+  const tree = []
+  const routes = (!roles || typeof (roles) === 'undefined') ? store.getters && store.getters.permission_routes : roles
+  routes.forEach(route => {
+    const tmp = { ...route }
+    if (tmp.id && tmp.name) {
+      const tmpTree = { id: tmp.id, label: tmp.meta.title ? tmp.meta.title : tmp.name, children: [] }
+      if (tmp.children && tmp.children.length) {
+        tmpTree['children'] = getRoutesTree(tmp.children)
+      }
+      tree.push(tmpTree)
+    }
+  })
+  return tree
+}
